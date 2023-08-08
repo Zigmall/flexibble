@@ -1,6 +1,6 @@
+import { NavLinks } from '@/constants';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
 
 const Navbar = () => {
   return <nav className='flexBetween navbar'>
@@ -10,7 +10,11 @@ const Navbar = () => {
 
           </Link>
         <ul className='xl:flex hidden text-spall gap-7'>
-
+          {NavLinks.map((link) => (
+            <Link href={link.href} key={link.key}>
+              {link.text}
+            </Link>
+          ))}
         </ul>
       </div>
     </nav>;
