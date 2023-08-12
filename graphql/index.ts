@@ -1,15 +1,15 @@
 export const getUserQuery = `
-    query getUser($email: String!) {
-        user(email: $email) {
-            id
-            email
-            name    
-            avatarUrl
-            description
-            githubUrl
-            linkedInUrl
+    query GetUser($email: String!) {
+        user(by: { email:  $email }) {
+          id
+          name
+          email
+          avatarUrl
+          description
+          githubUrl
+          linkedInUrl
         }
-    }
+      }
     `;
 
 export const createUserMutation = `
