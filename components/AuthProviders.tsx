@@ -1,14 +1,15 @@
 'use client';
-import { useState, useEffect } from 'react';
+
 import { getProviders, signIn } from 'next-auth/react';
+import React, { useEffect, useState } from 'react';
 
 type Provider = {
   id: string;
   name: string;
   type: string;
-  signInUrl: string;
+  signinUrl: string;
   callbackUrl: string;
-  signInUrlParams?: Record<string, string | undefined>;
+  signinUrlParams?: Record<string, string> | undefined;
 };
 
 type Providers = Record<string, Provider>;
@@ -19,8 +20,10 @@ const AuthProviders = () => {
   useEffect(() => {
     const fetchProviders = async () => {
       const res = await getProviders();
+
       setProviders(res);
     };
+
     fetchProviders();
   }, []);
 
