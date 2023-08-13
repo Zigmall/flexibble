@@ -2,7 +2,11 @@
 
 import { SessionInterface } from '@/common.types';
 import Image from 'next/image';
-import React from 'react';
+import React, { useState } from 'react';
+import FormField from './FormField';
+import { categoryFilters } from '@/constants';
+import CustomMenu from './CustomMenu';
+import Button from './Button';
 
 type Props = {
   type: string;
@@ -10,15 +14,38 @@ type Props = {
 };
 
 const ProjectForm = ({ type, session }: Props) => {
-  const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {};
+  const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+    if (!file.type.includes('image')) {
+      alert('Please upload an image file');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      const result = reader.result as string;
+      handleStateChange('image', result);
+    };
+  };
   const handleSubmit = (e: React.FormEvent) => {};
 
-  const form = {
+  const [submitting, setSubmitting] = useState(false);
+  const [form, setForm] = useState({
+    title: '',
+    description: '',
     image: '',
-    title: ''
-  };
+    liveSiteUrl: '',
+    githubUrl: '',
+    category: ''
+  });
 
-  const handleStateChange = (fieldName: string, value: string) => {};
+  const handleStateChange = (fieldName: string, value: string) => {
+    setForm((prev) => ({ ...prev, [fieldName]: value }));
+  };
 
   return (
     <form onSubmit={handleSubmit} className="flexStart form">
@@ -50,6 +77,49 @@ const ProjectForm = ({ type, session }: Props) => {
         placeholder="Flexibble"
         setState={(value) => handleStateChange('title', value)}
       />
+
+      <FormField
+        title="Description"
+        state={form.description}
+        placeholder="Showcase and discover remarkable projects"
+        setState={(value) => handleStateChange('description', value)}
+      />
+
+      <FormField
+        type="url"
+        title="Website URL"
+        state={form.liveSiteUrl}
+        placeholder="https://zigmal.dev"
+        setState={(value) => handleStateChange('liveSiteUrl', value)}
+      />
+
+      <FormField
+        type="url"
+        title="Github URL"
+        state={form.githubUrl}
+        placeholder="https://github.com"
+        setState={(value) => handleStateChange('githubUrl', value)}
+      />
+
+      <CustomMenu
+        title="Category"
+        state={form.category}
+        filters={categoryFilters}
+        setState={(value) => handleStateChange('category', value)}
+      />
+
+      <div className="flexStart w-full">
+        <Button
+          title={
+            submitting
+              ? `${type === 'create' ? 'Creating' : 'Editing'}`
+              : `${type === 'create' ? 'Create' : 'Edit'}`
+          }
+          type="submit"
+          leftIcon={submitting ? '' : '/plus.svg'}
+          submitting={submitting}
+        />
+      </div>
     </form>
   );
 };
