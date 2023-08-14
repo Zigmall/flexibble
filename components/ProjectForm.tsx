@@ -7,6 +7,8 @@ import FormField from './FormField';
 import { categoryFilters } from '@/constants';
 import CustomMenu from './CustomMenu';
 import Button from './Button';
+import { createNewProject, fetchToken } from '@/lib/actions';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   type: string;
@@ -14,6 +16,7 @@ type Props = {
 };
 
 const ProjectForm = ({ type, session }: Props) => {
+  const router = useRouter();
   const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const file = e.target.files?.[0];
@@ -31,7 +34,23 @@ const ProjectForm = ({ type, session }: Props) => {
       handleStateChange('image', result);
     };
   };
-  const handleSubmit = (e: React.FormEvent) => {};
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    const { token } = await fetchToken();
+
+    try {
+      if (type === 'create') {
+        await createNewProject(form, session?.user?.id, token);
+        router.push('/');
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
