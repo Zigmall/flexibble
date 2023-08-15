@@ -1,5 +1,12 @@
 import { ProjectForm } from '@/common.types';
-import { createProjectMutation, createUserMutation, getUserQuery } from '@/graphql';
+import {
+  createProjectMutation,
+  createUserMutation,
+  getProjectByIdQuery,
+  getProjectsOfUserQuery,
+  getUserQuery,
+  projectsQuery
+} from '@/graphql';
 import { GraphQLClient } from 'graphql-request';
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -63,18 +70,34 @@ export const createNewProject = async (form: ProjectForm, creatorId: string, tok
   const imageUrl = await uploadImage(form.image);
 
   if (imageUrl.url) {
-    client.setHeader("Authorization", `Bearer ${token}`);
+    client.setHeader('Authorization', `Bearer ${token}`);
 
     const variables = {
-      input: { 
-        ...form, 
-        image: imageUrl.url, 
-        createdBy: { 
-          link: creatorId 
+      input: {
+        ...form,
+        image: imageUrl.url,
+        createdBy: {
+          link: creatorId
         }
       }
     };
 
     return makeGraphQLRequest(createProjectMutation, variables);
   }
+};
+
+export const fetchAllProjects = (category?: string | null, endcursor?: string | null) => {
+  client.setHeader('x-api-key', apiKey);
+
+  return makeGraphQLRequest(projectsQuery, { category, endcursor });
+};
+
+export const getProjectDetails = (id: string) => {
+  client.setHeader('x-api-key', apiKey);
+  return makeGraphQLRequest(getProjectByIdQuery, { id });
+};
+
+export const getUserProjects = (id: string, last?: number) => {
+  client.setHeader('x-api-key', apiKey);
+  return makeGraphQLRequest(getProjectsOfUserQuery, { id, last });
 };
