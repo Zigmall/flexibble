@@ -14,7 +14,7 @@ export const createProjectMutation = `
 	}
 `;
 
-export const updateProjectMutation = `
+export const editProjectMutation = `
 	mutation UpdateProject($id: ID!, $input: ProjectUpdateInput!) {
 		projectUpdate(by: { id: $id }, input: $input) {
 			project {
