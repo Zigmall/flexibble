@@ -1,6 +1,16 @@
 import { ProjectInterface } from '@/common.types';
+import Categories from '@/components/Categories';
 import ProjectCard from '@/components/ProjectCard';
 import { fetchAllProjects } from '@/lib/actions';
+
+type SearchParams = {
+  category?: string | null;
+  endcursor?: string | null;
+};
+
+type Props = {
+  searchParams: SearchParams;
+};
 
 type ProjectSearch = {
   projectSearch: {
@@ -14,24 +24,29 @@ type ProjectSearch = {
   };
 };
 
-const Home = async () => {
-  const data = (await fetchAllProjects('Full-Stack')) as ProjectSearch;
+export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
+export const revalidate = 0;
+
+const Home = async ({ searchParams: { category, endcursor } }: Props) => {
+  const data = (await fetchAllProjects(category, endcursor)) as ProjectSearch;
+
   const projectsToDisplay = data?.projectSearch?.edges || [];
 
   if (projectsToDisplay.length === 0) {
     return (
-      <section className="flex-start flex-col paddings">
-        Categories
-        <p className="no-result-text text-center">
-          No projects found, You need to create some first
-        </p>
+      <section className="flexStart flex-col paddings">
+        <Categories />
+
+        <p className="no-result-text text-center">No projects found, go create some first.</p>
       </section>
     );
   }
 
   return (
     <section className="flexStart flex-col paddings mb-16">
-      Categories
+      <Categories />
+
       <section className="projects-grid">
         {projectsToDisplay.map(({ node }: { node: ProjectInterface }) => (
           <ProjectCard
@@ -48,4 +63,5 @@ const Home = async () => {
     </section>
   );
 };
+
 export default Home;

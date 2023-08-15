@@ -4,6 +4,7 @@ import {
   createUserMutation,
   deleteProjectMutation,
   editProjectMutation,
+  getAllProjectsQuery,
   getProjectByIdQuery,
   getProjectsOfUserQuery,
   getUserQuery,
@@ -91,6 +92,9 @@ export const createNewProject = async (form: ProjectForm, creatorId: string, tok
 export const fetchAllProjects = (category?: string | null, endcursor?: string | null) => {
   client.setHeader('x-api-key', apiKey);
 
+  if (!category) {
+    return makeGraphQLRequest(getAllProjectsQuery, { endcursor });
+  }
   return makeGraphQLRequest(projectsQuery, { category, endcursor });
 };
 
@@ -127,11 +131,11 @@ export const editProject = async (form: ProjectForm, projectId: string, token: s
     }
   }
 
-  client.setHeader("Authorization", `Bearer ${token}`);
+  client.setHeader('Authorization', `Bearer ${token}`);
 
   const variables = {
     id: projectId,
-    input: updatedForm,
+    input: updatedForm
   };
 
   return makeGraphQLRequest(editProjectMutation, variables);
