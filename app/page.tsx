@@ -1,4 +1,5 @@
 import { ProjectInterface } from '@/common.types';
+import Categories from '@/components/Categories';
 import ProjectCard from '@/components/ProjectCard';
 import { fetchAllProjects } from '@/lib/actions';
 
@@ -21,7 +22,7 @@ const Home = async () => {
   if (projectsToDisplay.length === 0) {
     return (
       <section className="flex-start flex-col paddings">
-        Categories
+        <Categories />
         <p className="no-result-text text-center">
           No projects found, You need to create some first
         </p>
@@ -31,7 +32,7 @@ const Home = async () => {
 
   return (
     <section className="flexStart flex-col paddings mb-16">
-      Categories
+      <Categories />
       <section className="projects-grid">
         {projectsToDisplay.map(({ node }: { node: ProjectInterface }) => (
           <ProjectCard
