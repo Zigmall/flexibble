@@ -9,7 +9,9 @@ const Categories = () => {
   const searchParams = useSearchParams();
   const category = searchParams.get('category') || '';
 
-  const handleTags = (filter: string) => {};
+  const handleTags = (filter: string) => {
+    router.push(`${pathName}?category=${filter}`);
+  };
 
   return (
     <div className="flexBetween w-full gap-5 flex-wrap">
