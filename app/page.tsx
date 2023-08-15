@@ -15,7 +15,7 @@ type ProjectSearch = {
 };
 
 const Home = async () => {
-  const data = (await fetchAllProjects('UI/UX')) as ProjectSearch;
+  const data = (await fetchAllProjects('Full-Stack')) as ProjectSearch;
   const projectsToDisplay = data?.projectSearch?.edges || [];
 
   if (projectsToDisplay.length === 0) {
